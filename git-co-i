@@ -55,7 +55,7 @@ if [ $branchType = "Remote:" ]
 	read coType
 	if [ $coType = "b" ]
 		then 
-		git checkout -b ${branchName/origin\//}
+		git checkout ${branchName/origin\//}
 		exit 0
 
 		
