@@ -1,0 +1,9 @@
+alias la='ls -a'
+
+
+alias bnh='cd /c/nyi-cvs1/website/'
+alias moo='cd /c/repos/cpg/moo/'
+alias git-fix-all-upstreams='git branch | tr "*" " " | xargs -L 1 git-fix-upstream'
+alias grip='grep -i'
+alias bashrc='subl ~/.bashrc'
+alias nossl='env GIT_SSL_NO_VERIFY=true'

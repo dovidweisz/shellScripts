@@ -1,0 +1,3 @@
+#!/bin/bash -e
+c:/stuff/sublime/sublime_text.exe -w $1
+

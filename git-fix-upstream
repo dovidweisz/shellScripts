@@ -1,0 +1,36 @@
+#!/bin/bash
+
+targetBranch="$1"
+startBranch="$2"
+
+
+
+if [ -z "$startBranch" ]
+	then
+	startBranch=$(git status -b | head -1 | awk '{print $3}')
+fi
+
+if [ -z "$targetBranch" ]
+	then 
+	targetBranch="$startBranch"
+	echo "no input"
+fi
+
+echo "targetBranch: $targetBranch"
+echo "startBranch: $startBranch"
+
+#branchName=$(git status -b | head -1 | awk '{print $3}')
+
+if [ "$startBranch" != "$targetBranch" ]
+	then
+	git checkout "$targetBranch"
+fi
+
+git branch -u "origin/$targetBranch"
+# -u is a shortcut for --set-upstream-to
+
+
+if [ "$startBranch" != "$targetBranch" ]
+	then
+	git checkout "$startBranch"
+fi

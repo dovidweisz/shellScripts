@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# first prune
+echo "running git fetch -p"
+git fetch -p
+echo "done running git fetch -p"
+# get list of dead branches
+
+deadBranches=$(git branch -vv | grep -F \[ | grep -F gone\] | awk '{print $1}')
+echo ""
+echo ""
+echo "Dead branches:"
+echo "$deadBranches"
+echo ""
+echo "Force delete dead branches?  (y or n)"
+
+read userInput
+
+if [ "$userInput" = "y" ]; then 
+	echo "$deadBranches" | xargs git branch -D
+fi
+
+

@@ -1,0 +1,67 @@
+#!/bin/bash
+if [ "$1" = "-D"  ];	then
+	flag="$1"
+	filter="$2"
+else
+	if [ "$2" = "-D" ];	then
+		flag="-D"
+	else
+		flag="-d"
+	fi
+	
+	filter=$1
+fi
+
+userName=$(git config user.name)
+branches=$(git branch  | while read line
+
+
+
+
+
+do
+	count="$count"
+	count=$((count + 1))
+	echo "$line\n"
+	
+done )
+
+
+
+
+
+allBranches="$branches"
+
+if [ "$filter" != "" ]
+	then
+	echo "filtered by $filter"
+	allBranches=$(echo "$allBranches" | grep -i "$filter"  )
+fi
+
+
+allBranches=$(echo -e $allBranches| while read line
+do
+	count="$count"
+	count=$((count + 1))
+	echo "$count $line\n"
+	
+done)
+
+echo -e $allBranches
+echo 'Select the branch you would like to delete:'
+
+read userInput
+
+selection=$(echo -e $allBranches | grep "^[[:space:]]*$userInput ")
+
+branchName=$(echo $selection | awk '{print $2}')
+
+
+echo "flag $flag"
+echo "branchName $branchName"
+
+git branch $flag $branchName
+
+
+
+	

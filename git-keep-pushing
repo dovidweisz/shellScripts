@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+
+
+while false
+do
+	echo "@0"
+	myErr=$("$0" 2>&1)
+	echo "$myErr"
+	echo 'retrying in 5 seconds'
+#	sleep 5
+done

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+userName=$(git config user.name)
+branches=$(git branch  | while read line
+do
+	count="$count"
+	count=$((count + 1))
+	echo "Local: $line"
+	
+done 
+)
+
+
+remoteBranches=$(git branch -a | grep "$userName" | grep remotes | while read line
+do
+	count="$count"
+	count=$((count + 1))
+	echo ${line/remotes\//Remote: }
+#	echo "\n"
+	
+done )
+
+allBranches="$branches
+$remoteBranches"
+
+if [ "$1" != "" ]
+	then
+	echo "filtered by $1"
+	allBranches=$(echo "$allBranches" | grep -i "$1"  )
+fi
+
+
+allBranches=$(echo "$allBranches" | while read line
+do
+	count="$count"
+	count=$((count + 1))
+	echo "$count $line\n"
+	
+done)
+
+echo -e $allBranches
+echo 'Select the branch you would like to check out:'
+
+read userInput
+
+selection=$(echo -e $allBranches | grep "^[[:space:]]*$userInput ")
+
+branchType=$(echo $selection | awk '{print $2}')
+branchName=$(echo $selection | awk '{print $3}')
+
+
+if [ $branchType = "Remote:" ]
+	then echo "$branchName is a remote branch"
+	echo "Type h to checkout the headless revision or b to create a new local branch"
+	read coType
+	if [ $coType = "b" ]
+		then 
+		git checkout -b ${branchName/origin\//}
+		exit 0
+
+		
+	fi
+	 
+fi
+git checkout $branchName
+
+	

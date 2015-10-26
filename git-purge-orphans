@@ -1,0 +1,73 @@
+#!/bin/bash
+
+
+if [[ "$1" == "-a" ]]; then
+	force=true
+fi
+
+git status -s | while read line ; do
+	if [[ $line =~ ^\?\?.*$ ]]; then
+		path=$(echo $line | awk '{print $2}')
+		if [[ $force ]]; then
+			#statements
+			echo 'gonnna force'
+			delOutput=$(rm "$path")
+			if [[ $delOutput == "" ]]; then
+				echo "deleted $path"
+			else
+				echo "$delOutput"
+				echo 'exiting'
+				exit 1
+			fi
+		else
+			echo "r u sure $path"
+			read rusure </dev/tty
+
+			case "$rusure" in
+				y|Y )
+					delOutput=$(rm -r "$path")
+					if [[ $delOutput == "" ]]; then
+						echo "deleted $path"
+					else
+						echo "$delOutput"
+						echo "exiting"
+						exit 0
+					fi
+					
+					;;
+				q|Q )
+					exit 0
+					;;
+				all )
+					
+					delOutput=$(rm -r "$path")
+					if [[ $delOutput == "" ]]; then
+						echo 'You can also delete all by passing in the -a flag  (eg: git purge-orphans -a).'
+						echo "deleted $path"
+					else
+						echo "$delOutput"
+						echo "exiting"
+						exit 0
+					fi
+					
+					force=true
+					;;
+			esac
+
+		
+
+		fi
+	fi
+done
+
+# if [ "$1" = "-f"  ];	then
+# 	echo "$res"
+# else
+# 	if [ "$2" = "-D" ];	then
+# 		flag="-D"
+# 	else
+# 		flag="-d"
+# 	fi
+	
+# 	filter=$1
+# fi

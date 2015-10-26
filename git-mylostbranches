@@ -1,0 +1,6 @@
+#!/bin/bash
+
+userName=$(git config user.name)
+
+git log --all --decorate | grep "Author: $userName" -2 | grep -P "commit [0-9,a-f]{40} \(.*\)" | grep -P "origin\/bugs\/[0-9]{5,6}"
+

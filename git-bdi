@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+branches=$(git branch  | while read line
+do
+	echo line | awk '{print $2} | xargs echo
+	count="$count"
+	count=$((count + 1))
+	echo "$count $line"
+	
+done )
+
+echo -e "$branches"
