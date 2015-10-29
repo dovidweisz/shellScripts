@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+ git log -30 --decorate --oneline $1 | grep \(.*\) |  awk -F '[()]' '{print $(NF-1)}' | sed 's/, /\n/g'
