@@ -18,13 +18,14 @@ app.use(logger('dev'));
 // that you pass it. In this case "GET /js/app.js"
 // will look for "./public/js/app.js".
 
-if( ! process.argv[2] ){
+/*if( ! process.argv[2] ){
 	throw 'First paramether is required (try "serveStatic $(pwd)")';
-}
+}*/
 
+var rootDir = process.argv[2] || ".";
 var listenPort = process.argv[3] || 3000;
 
-app.use(express.static(process.argv[2]));
+app.use(express.static(rootDir));
 
 // if you wanted to "prefix" you may use
 // the mounting feature of Connect, for example
@@ -41,7 +42,7 @@ app.use(express.static(process.argv[2]));
 //app.use(express.static(__dirname + '/public/css'));
 
 app.listen(listenPort);
-console.log("serviing files from", process.argv[2]);
+console.log("serviing files from", rootDir);
 console.log('listening on port', listenPort);
 console.log('try:');
 console.log('  GET /index.html');
