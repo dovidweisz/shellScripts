@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Directory Listing of <%- obj.originalUrl %></title>
+</head>
+<body>
+	<h1>Directory Listing of <%- obj.originalUrl %></h1>
+	<% for(var i = 0; i < obj.breadCrumbs.length; i++){ %>
+			<span>
+				<a href='<%- obj.breadCrumbs[i].link  %>' ><%- obj.breadCrumbs[i].name %></a> /
+			</span>
+		<%}%>
+	<ul>
+	<% if(obj.breadCrumbs.length > 1){ %>
+		<a href="<%- obj.breadCrumbs[obj.breadCrumbs.length - 2].link %>">..</a>
+	<% } %>
+		<% for(var i = 0; i < obj.dirInfo.length; i++){ %>
+			<li>
+				<a href='<%- obj.dirInfo[i].name  %><%- obj.dirInfo[i].isDirectory ? "/" : "" %>' ><%- obj.dirInfo[i].name %></a>
+			</li>
+		<%}%>
+	</ul>
+	
+</body>
+	
+
+
+</html> 
