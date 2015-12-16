@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# this is specific to my employers commit message format requirements:
+# (a five digit bug number followed by space hyphen space usefull message eg: 00000 - did stuff )
+# script will change that bugnumber with a commit amend
+
+# useful for changing bug numbers en masse in an interactive rebase. (execute between commits)
+
 if [[ "$1" =~ [0-9]{5} ]]; then
 	git commit --amend -m "$(git log --pretty='format:%B' -1 | sed -e "s/[0-9]\{5\}/$1/")"
 	echo "New commit message:"
