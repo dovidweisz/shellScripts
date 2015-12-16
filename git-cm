@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#this will output the last three commits before entering the commit .. usefull if you use an editor outside the command line (ie sublime text)
+
+git log -3
+
+git commit $@

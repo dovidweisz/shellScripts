@@ -1,9 +1,35 @@
-#/bin/bash
+#!/bin/bash
 
-for i in `seq 1 10`;
+# this is good for people who've never heard of reflog :P
+
+output=""
+echo checking your last 50 checkouts
+
+
+trap 'tput cnorm; echo' EXIT
+
+# Make text cursor invisible
+tput civis
+# Save cursor position
+tput sc
+
+
+for i in `seq 1 50`;
 do
-	git log -1 --oneline --decorate @{"-$i"}
+	myLine=$(git log -1 --oneline --decorate @{"-$i"})
+	
+	output+="$myLine\n"
+	
+	# Back to saved position
+    tput rc
+     printf "%s" "$i"
+
 done    
+tput rc
+
+echo done
+
+echo -e "$output" | grep \(.*\) |  awk -F '[()]' '{print $(NF-1)}' | sed 's/, /\n/g' | sort | uniq
 
 
 

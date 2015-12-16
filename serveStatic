@@ -36,9 +36,9 @@ app.get("/*/", function(req,res){
 	//var contents = fs.readdirSync(rootDir);
 	var originalUrl = req.originalUrl.replace(/%20/g, " ");
 	var dirInfo = getDirInfo(rootDir + originalUrl);
-	var template = fs.readFileSync(__dirname + "/node_dir_listing.html", "utf8");
+	//var template = fs.readFileSync(__dirname + "/node_dir_listing.html", "utf8");
 	//console.log(req);
-	template = _.template(template);
+	//template = _.template(template);
 	var resp = template({
 		dirInfo : dirInfo,
 		breadCrumbs : breadCrumbs(originalUrl),
