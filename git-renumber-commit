@@ -1,0 +1,6 @@
+#!/bin/bash
+
+git commit --amend -m "$(git log --pretty='format:%B' -1 | sed -e "s/[0-9]\{5\}/$1/")"
+
+echo "New commit message:"
+echo "$(git log --pretty='format:%B' -1 )"
