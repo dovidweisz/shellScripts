@@ -1,0 +1,38 @@
+#!/Users/user/.nvm/versions/node/v7.0.0/bin/node
+
+let fs = require("fs");
+
+let filePath = process.argv[2];
+
+
+
+fs.readFile(filePath, function(err, contentBuffer){
+    if(! err){
+        let content = contentBuffer.toString(),
+            selector = /selector:\s*\'([a-z\-]+)'/.exec(content)[1],
+            templateName = /templateUrl:\s*\'([a-z\.]+)'/.exec(content)[1],
+            stylesheetName = /styleUrls:\s*\[\s*\'([a-z\.]+)'/.exec(content)[1];
+        selector += "-component"
+        if( templateName ){
+            let htmlContent = `<div class="${selector}"></div>`;
+            fs.writeFile(templateName, htmlContent, function(){
+                console.log(arguments);
+            });
+        }
+
+        if( stylesheetName ){
+            let stylesheetContent = 
+`@import "app";
+.${selector}{
+
+}`;
+            fs.writeFile(stylesheetName, stylesheetContent, function(){
+                console.log(arguments);
+            });
+        }
+        console.log(selector, templateName, stylesheetName);
+    }
+})
+
+
+fs

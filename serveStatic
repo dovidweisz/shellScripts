@@ -1,4 +1,4 @@
-#!/c/stuff/bin/node
+#!/apps/homebrew/bin/node
 
 /**
  * Module dependencies.
