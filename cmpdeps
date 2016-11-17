@@ -8,10 +8,10 @@ let filePath = process.argv[2];
 
 fs.readFile(filePath, function(err, contentBuffer){
     if(! err){
-        let content = contentBuffer.toString(),
-            selector = /selector:\s*\'([a-z\-]+)'/.exec(content)[1],
-            templateName = /templateUrl:\s*\'([a-z\.]+)'/.exec(content)[1],
-            stylesheetName = /styleUrls:\s*\[\s*\'([a-z\.]+)'/.exec(content)[1];
+        let content = contentBuffer.toString();
+        let    selector = /selector:\s*\'([a-z\-]+)'/.exec(content)[1],
+            templateName = /templateUrl:\s*\'([a-z\.\-]+)'/.exec(content)[1],
+            stylesheetName = /styleUrls:\s*\[\s*\'([a-z\.\-]+)'/.exec(content)[1];
         selector += "-component"
         if( templateName ){
             let htmlContent = `<div class="${selector}"></div>`;
