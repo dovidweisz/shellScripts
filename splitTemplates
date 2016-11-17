@@ -1,0 +1,45 @@
+#!/Users/user/.nvm/versions/node/v7.0.0/bin/node
+
+let fs = require("fs");
+
+let filePath = process.argv[2];
+
+fs.readFile(filePath, function(err, contentBuffer){
+    if(! err){
+        let content = contentBuffer.toString();
+
+        let origTemplate = /(templateUrl\s*:\s*)'((?:\.\/)[a-z\.\-]+)\.html'/.exec(content);
+
+
+        if(origTemplate){
+        	let templatePath = origTemplate[2];
+        	fs.readFile( `${templatePath}.html`, function(err, htmlContentBuffer){
+        		if(err) throw err;
+        		//console.log(htmlContentBuffer.toString());	
+        		fs.writeFile(`${templatePath}.desktop.html`, htmlContentBuffer, function(){
+	                console.log(arguments);
+	            });
+	            fs.writeFile(`${templatePath}.mobile.html`, htmlContentBuffer, function(){
+	                console.log(arguments);
+	            });
+	            content = content.replace(/(templateUrl\s*:\s*)'((?:\.\/)[a-z\.\-]+)\.html'/, "$1require(`$2.${Config.DEVICE}.html`)");
+	            //console.log(content);	
+	            fs.writeFile(filePath, content, function(){
+	                console.log(arguments);
+	            });
+        	});
+        }
+        
+    }else{
+    	throw err;			
+    }
+});	
+
+
+// @Component({
+//   selector:     'bh-header',
+//   templateUrl:  './header.component.html'
+// })
+
+
+//  require(`$2${Config.DEVICE}.html`)
