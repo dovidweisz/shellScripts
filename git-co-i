@@ -11,6 +11,8 @@ done
 )
 
 
+
+
 remoteBranches=$(git branch -a | grep "$userName" | grep remotes | while read line
 do
 	count="$count"
@@ -20,13 +22,29 @@ do
 	
 done )
 
+if [ "$1" != "" ]
+	then
+	remoteFilteredBranches=$(git branch -a | grep -i "$1" | grep remotes | while read line
+	do
+	count="$count"
+	count=$((count + 1))
+	echo ${line/remotes\//Remote: }
+#	echo "\n"
+	
+done )
+fi
+
 allBranches="$branches
-$remoteBranches"
+$remoteBranches
+$remoteFilteredBranches"
 
 if [ "$1" != "" ]
 	then
-	echo "filtered by $1"
-	allBranches=$(echo "$allBranches" | grep -i "$1"  )
+	echo "filtered by $@"
+	for filter in "$@"
+	do
+		allBranches=$(echo "$allBranches" | grep -i "$filter"  )
+	done
 fi
 
 
