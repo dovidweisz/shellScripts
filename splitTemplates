@@ -1,4 +1,4 @@
-#!/Users/user/.nvm/versions/node/v7.0.0/bin/node
+#!/Users/user/.nvm/versions/node/v7.3.0/bin/node
 
 let fs = require("fs");
 
