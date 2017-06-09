@@ -9,11 +9,16 @@ do
 	
 done 
 )
+#remoteFilter = ""
+if [ "$1" != "" ]
+	then
+	remoteFilter="$1"
+	else
+	remoteFilter="$userName"
+fi
 
 
-
-
-remoteBranches=$(git branch -a | grep "$userName" | grep remotes | while read line
+remoteBranches=$(git branch -a | grep -i "$remoteFilter" | grep remotes | while read line
 do
 	count="$count"
 	count=$((count + 1))
@@ -22,21 +27,8 @@ do
 	
 done )
 
-if [ "$1" != "" ]
-	then
-	remoteFilteredBranches=$(git branch -a | grep -i "$1" | grep remotes | while read line
-	do
-	count="$count"
-	count=$((count + 1))
-	echo ${line/remotes\//Remote: }
-#	echo "\n"
-	
-done )
-fi
-
 allBranches="$branches
-$remoteBranches
-$remoteFilteredBranches"
+$remoteBranches"
 
 if [ "$1" != "" ]
 	then
@@ -61,6 +53,13 @@ echo 'Select the branch you would like to check out:'
 
 read userInput
 
+if [ "$userInput" = "q" ]
+	then
+	
+	echo 'quiting'
+	exit 0
+fi
+
 selection=$(echo -e $allBranches | grep "^[[:space:]]*$userInput ")
 
 branchType=$(echo $selection | awk '{print $2}')
@@ -68,9 +67,10 @@ branchName=$(echo $selection | awk '{print $3}')
 
 
 if [ $branchType = "Remote:" ]
-	then echo "$branchName is a remote branch"
-	echo "Type h to checkout the headless revision or b to create a new local branch"
-	read coType
+	then 
+	echo "$branchName is a remote branch"
+	read -p "Type b to create a new local branch or h to checkout the headless revision: " -e -i b coType
+
 	if [ $coType = "b" ]
 		then 
 		git checkout ${branchName/origin\//}
