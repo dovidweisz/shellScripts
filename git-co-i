@@ -32,8 +32,11 @@ $remoteBranches"
 
 if [ "$1" != "" ]
 	then
-	echo "filtered by $1"
-	allBranches=$(echo "$allBranches" | grep -i "$1"  )
+	echo "filtered by $@"
+	for filter in "$@"
+	do
+		allBranches=$(echo "$allBranches" | grep -i "$filter"  )
+	done
 fi
 
 
