@@ -1,0 +1,49 @@
+#!/bin/bash
+
+
+fileStatus() {
+    fileName=$1
+    statusLine=$(git status -s | grep " $fileName$")
+    hasChanges=${#statusLine}
+
+    # echo "$fileName: "
+    if (($hasChanges))
+        then
+            echo 1 # has changes
+            if [ ${statusLine:0:1} != " " ] 
+                then
+                    echo ${statusLine:0:1} # staged changes
+                else
+                    echo 0
+            fi
+
+            if [ "${statusLine:1:1}" != " " ] 
+                then
+                    echo ${statusLine:1:1} # unstaged changes
+                else
+                    echo 0
+            fi
+        else
+            echo 0 0 0
+    fi
+}
+
+read -r packageJsonHasChanges packageJsonStaged packageJsonUnstaged <<< `fileStatus package.json`
+
+if [ $packageJsonHasChanges != "0" ] && [ $packageJsonUnstaged != "0" ] 
+    then
+        echo package.json has unstaged changes. exiting.
+        exit
+fi
+
+if [ -a .git/MERGE_HEAD ]
+    then
+        mergeHead=`cat .git/MERGE_HEAD`
+        echo checking out yarn.lock from:
+        git log -1 --oneline --decorate $mergeHead
+        git checkout $mergeHead -- yarn.lock
+        echo doing yarn install
+        yarn
+    else
+        echo no MERGE_HEAD
+fi
