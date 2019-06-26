@@ -1,0 +1,48 @@
+#!/bin/bash
+
+containers=$(docker-compose ps --services)
+COLUMNS=40
+
+echo "Chose a container/service"
+count=0
+for container in $containers;
+do
+count=$((count + 1))
+ 
+echo "$count) $container"
+
+done
+
+read containernumber
+
+containername=$(echo $containers | awk "{print \$$containernumber}")
+
+echo "Container chosen: $containername"
+
+
+echo "################################################"
+echo "###        What would you like to do?        ###"
+echo "###        ==========================        ###"
+echo "###  1) Open a bash terminal in a container. ###"
+echo "###  2) Run a command in a container.        ###"
+echo "###  3) View container logs.                 ###"
+echo "################################################"
+
+read command
+
+case "$command" in
+    1)
+        docker-compose exec $containername bash
+        ;;
+    2)
+        echo "Please enter the command you would like to run on $containername"
+        read contcommand
+        docker-compose exec $containername $contcommand
+        ;;
+    3)
+        docker-compose logs -f --tail=25 $containername | awk '{ $1=""; $2=""; print}'
+        ;;
+    *)
+        echo 'Not a valid selection'
+
+esac
