@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Function to list SSH hosts from ~/.ssh/config
+list_ssh_hosts() {
+    grep -E "^Host " ~/.ssh/config | awk '{print $2}'
+}
+
+# Function to list active SSH tunnels
+list_active_tunnels() {
+    ps aux | grep "ssh -f -N" | grep -v grep
+}
+
+# Function to create a new SSH tunnel
+create_tunnel() {
+    local port=$1
+    local local_port remote_port server
+    
+    if [[ $port == *":"* ]]; then
+        local_port=${port%%:*}
+        remote_port=${port##*:}
+    else
+        local_port=$port
+        remote_port=$port
+    fi
+
+    local hosts=( $(list_ssh_hosts) )
+    
+    if [[ ${#hosts[@]} -eq 0 ]]; then
+        echo "No SSH servers found in ~/.ssh/config."
+        exit 1
+    elif [[ ${#hosts[@]} -eq 1 ]]; then
+        server=${hosts[0]}
+    else
+        echo "Select an SSH server:"
+        select server in "${hosts[@]}"; do
+            if [[ -n $server ]]; then break; fi
+        done
+    fi
+
+    echo "Creating SSH tunnel: $local_port -> $server:$remote_port"
+    ssh -f -N -L ${local_port}:localhost:${remote_port} $server
+    echo "Tunnel created successfully."
+}
+
+# Function to abort an active tunnel
+abort_tunnel() {
+    local tunnels=( $(list_active_tunnels | awk '{print $2}') )
+    
+    if [[ ${#tunnels[@]} -eq 0 ]]; then
+        echo "No active tunnels found."
+        exit 0
+    fi
+
+    echo "Select a tunnel to abort:"
+    select pid in "${tunnels[@]}"; do
+        if [[ -n $pid ]]; then
+            kill $pid
+            echo "Tunnel with PID $pid aborted."
+            break
+        fi
+    done
+}
+
+# Main script logic
+if [[ $# -eq 0 ]]; then
+    echo "No arguments provided. Listing active tunnels..."
+    list_active_tunnels
+
+    if [[ $? -eq 0 ]]; then
+        echo "Do you want to abort any tunnel? (y/n)"
+        read choice
+        if [[ $choice == "y" ]]; then
+            abort_tunnel
+        else
+            echo "No tunnels aborted."
+        fi
+    fi
+else
+    create_tunnel $1
+fi
