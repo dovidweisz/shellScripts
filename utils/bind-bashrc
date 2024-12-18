@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Get the absolute path of the script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Path to the 'bashrc' file in the script's parent directory
+BASHRC_TO_SOURCE="$(realpath "$SCRIPT_DIR/../bashrc")"
+
+# Path to the user's .bashrc
+USER_BASHRC="$HOME/.bashrc"
+
+# Check if the source command is already in the user's .bashrc
+if ! grep -Fxq "source \"$BASHRC_TO_SOURCE\"" "$USER_BASHRC"; then
+  echo "Adding source command to $USER_BASHRC..."
+  echo "source \"$BASHRC_TO_SOURCE\"" >> "$USER_BASHRC"
+  echo "Done. You can restart your shell or run 'source ~/.bashrc' to apply changes."
+else
+  echo "The source command is already in $USER_BASHRC. No changes made."
+fi
