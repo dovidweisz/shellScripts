@@ -15,7 +15,7 @@ list_active_tunnels() {
                 local_port = ports[1];
                 remote_port = ports[3];
                 host = $(i + 1);
-                print NR, "Host:", host, "Local Port:", local_port, "-> Remote Port:", remote_port;
+                print NR, ":", host;
             }
         }
     }'
@@ -58,7 +58,7 @@ abort_tunnel() {
     local tunnels=( $(ps aux | grep "ssh -f -N" | grep -v grep | awk '{print $2}') )
     
     if [[ ${#tunnels[@]} -eq 0 ]]; then
-        echo "No active tunnels found."
+        echo "No active tunnels found. Exiting."
         exit 0
     fi
 
@@ -87,18 +87,14 @@ abort_tunnel() {
 
 # Main script logic
 if [[ $# -eq 0 ]]; then
-    echo "No arguments provided. Listing active tunnels..."
-    list_active_tunnels
+    active_tunnels=$(ps aux | grep "ssh -f -N" | grep -v grep)
 
-    if [[ $? -eq 0 ]]; then
-        echo "Do you want to abort any tunnel? (y/n)"
-        read -r choice
-        if [[ $choice == "y" ]]; then
-            abort_tunnel
-        else
-            echo "No tunnels aborted."
-        fi
+    if [[ -z $active_tunnels ]]; then
+        echo "No active tunnels found. Exiting."
+        exit 0
     fi
+
+    abort_tunnel
 else
     create_tunnel "$1"
 fi
