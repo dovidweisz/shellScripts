@@ -69,7 +69,10 @@ abort_tunnel() {
     echo "Select the number of the tunnel to abort (or 0 to abort all):"
     read -r choice
 
-    if [[ $choice -eq 0 ]]; then
+    if [ -z "$choice" ]; then
+        echo "Exiting."
+        exit 0;
+    elif [[ $choice -eq 0 ]]; then
         for pid in "${tunnels[@]}"; do
             kill "$pid"
         done
