@@ -1,0 +1,30 @@
+#!/bin/bash
+
+branches=`git branch -a | sed -r 's/^\*? {1,2}//'`
+
+if [ "$1" != "" ]
+	then
+	echo "Filtered by $@"
+	for filter in "$@"
+	do
+		branches=$(echo "$branches" | grep -i "$filter" )
+	done
+fi
+
+
+branches=(
+	$(echo "$branches" |
+		sed 's|^remotes/[a-z]*/||' | # Remove remotes prefix
+		awk ' !x[$0]++'  # Removes duplicates.  See http://stackoverflow.com/questions/11532157
+	)
+)
+
+PS3="Choose a branch: "
+
+select d in "${branches[@]}"; do
+	test -n "$d" && break;
+	echo ">>> Invalid Selection";
+done
+
+git checkout "$d"
+
